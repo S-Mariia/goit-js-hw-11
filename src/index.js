@@ -2,13 +2,22 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import PixabayApiService from './js/pixabey-api-service';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import {
+  svgLikes,
+  svgComments,
+  svgViews,
+  svgDownloads,
+  svgSearch,
+} from './js/svg-icons';
 
 const refs = {
   form: document.querySelector('#search-form'),
+  submitBtn: document.querySelector('#search-form > button'),
   gallery: document.querySelector('.gallery'),
   loadMoreBtn: document.querySelector('.load-more'),
 };
 
+refs.submitBtn.insertAdjacentHTML('beforeend', svgSearch);
 const pixabayApiService = new PixabayApiService();
 const simpleLigtboxGallery = new SimpleLightbox('.gallery a');
 
@@ -89,20 +98,20 @@ function createGalleryMarkup(list) {
     </a>
     <div class="info">
     <p class="info-item">
+    ${svgLikes}
     <span> ${likes} </span>  
-    <b> Likes</b>
     </p>
     <p class="info-item">
+    ${svgViews}
     <span> ${views} </span>  
-    <b> Views</b>
     </p>
     <p class="info-item">
+    ${svgComments}
     <span> ${comments} </span>  
-    <b> Comments</b>
     </p>
     <p class="info-item">
+    ${svgDownloads}
     <span> ${downloads} </span>  
-    <b> Downloads</b>
     </p>
     </div>
     </div>`

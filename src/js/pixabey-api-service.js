@@ -1,12 +1,13 @@
+const axios = require('axios').default;
 const BASE_URL = 'https://pixabay.com/api/';
 
-const searchParams = new URLSearchParams({
+const params = {
   key: '30801365-9fdc371d6ba359459ec7eb092',
   image_type: 'photo',
   orientation: 'horizontal',
   safesearch: true,
   per_page: 40,
-});
+};
 
 export default class PixabayApiService {
   #searchQuery;
@@ -19,10 +20,8 @@ export default class PixabayApiService {
   }
 
   async fetchImages() {
-    const response = await fetch(
-      `${BASE_URL}?q=${this.searchQuery}&page=${this.page}&${searchParams}`
-    );
-    return await response.json();
+    const {data} = await axios.get(`${BASE_URL}?q=${this.searchQuery}&page=${this.page}`, {params});
+    return data;
   }
 
   increasePage() {
