@@ -1,6 +1,6 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import PixabayApiService from './js/pixabey-api-service';
+import PixabayApiService from './js/pixabay-api-service';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import {
   svgLikes,
@@ -65,6 +65,7 @@ async function onLoadMoreBtnClick() {
   pixabayApiService.increasePage();
   if (!pixabayApiService.canLoadMoreImages()) {
     hideLoadMoreBtn();
+    console.log('III');
     Notify.info("We're sorry, but you've reached the end of search results.");
   }
 
@@ -144,3 +145,4 @@ function addSmoothScroll() {
     behavior: 'smooth',
   });
 }
+

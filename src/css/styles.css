@@ -38,6 +38,14 @@ body {
   background-color: #eceff1;
 }
 
+.list {
+  margin-top: 30px;
+}
+
+.list-item:not(:last-child) {
+  margin-bottom: 7px;
+}
+
 .container {
   width: 100%;
   margin: 0 auto;
@@ -129,7 +137,7 @@ body {
 .gallery {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 20px;
 }
 
@@ -211,10 +219,49 @@ body {
   transform: scale(1.05);
 }
 
-.hidden {
-  display: none;
-}
-
 .photo-card:hover {
   transform: scale(1.03);
+}
+
+.btn-scroll-up {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  display: block;
+  width: 60px;
+  height: 60px;
+
+  border-radius: 50%;
+  background-color: rgb(72, 72, 214);
+  color: #fff;
+  cursor: pointer;
+
+  transition: transform var(--animation-duration) var(--timing-function);
+}
+
+@media screen and (min-width: 768px) {
+  .btn-scroll-up {
+    right: 30px;
+    bottom: 30px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .btn-scroll-up {
+    right: 40px;
+    bottom: 40px;
+
+    width: 70px;
+    height: 70px;
+
+    font-size: 17px;
+  }
+}
+
+.btn-scroll-up:hover {
+  transform: scale(1.05);
+}
+
+.hidden {
+  display: none;
 }
