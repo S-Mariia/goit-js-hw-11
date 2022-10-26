@@ -17,6 +17,7 @@ const refs = {
   gallery: document.querySelector('.gallery'),
   target: document.querySelector('.guard'),
   scrollUpBtn: document.querySelector('.btn-scroll-up'),
+  loader: document.querySelector('.loader'),
 };
 
 refs.submitBtn.insertAdjacentHTML('beforeend', svgSearch);
@@ -54,11 +55,22 @@ function onScroll() {
 
 async function onFormSubmit(evt) {
   evt.preventDefault();
-  clearGallery();
-  pixabayApiService.resetPage();
-  pixabayApiService.searchQuery = evt.target.elements.searchQuery.value;
-
+  showLoader();
+  
+  const query = evt.target.elements.searchQuery.value.trim();
   try {
+  if (query === '') {
+    Notify.warning(
+      'The input is empty. Please type something.'
+      );
+      hideLoader();
+      throw new Error('empty input');
+    }
+    pixabayApiService.searchQuery = query;
+    
+    clearGallery();
+    pixabayApiService.resetPage();
+    
     const { totalHits, hits } = await pixabayApiService.fetchImages();
 
     pixabayApiService.amountOfPages = Math.ceil(totalHits / 40);
@@ -67,6 +79,7 @@ async function onFormSubmit(evt) {
       Notify.warning(
         'Sorry, there are no images matching your search query. Please try again.'
       );
+      hideLoader();
       throw new Error(
         'Sorry, there are no images matching your search query. Please try again.'
       );
@@ -77,6 +90,7 @@ async function onFormSubmit(evt) {
 
     renderGallery(markup);
     simpleLigtboxGallery.refresh();
+    hideLoader();
   } catch (err) {
     console.log(err);
   }
@@ -160,4 +174,11 @@ function hideScrollUpBtn() {
   refs.scrollUpBtn.classList.add('hidden');
 }
 
+function showLoader() {
+  refs.loader.classList.remove('hidden');
+}
+
+function hideLoader() {
+refs.loader.classList.add('hidden');
+}
 

@@ -27,13 +27,19 @@ refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 
 async function onFormSubmit(evt) {
   evt.preventDefault();
-  clearGallery();
   hideLoadMoreBtn();
   showLoader();
   pixabayApiService.resetPage();
-  pixabayApiService.searchQuery = evt.target.elements.searchQuery.value.trim();
-
+  const query = evt.target.elements.searchQuery.value.trim();
   try {
+  if (query === '') {
+    Notify.warning('The input is empty. Please type something.');
+    hideLoader();
+    throw new Error('empty input');
+  }
+  pixabayApiService.searchQuery = query;
+  clearGallery();
+
     const { totalHits, hits } = await pixabayApiService.fetchImages();
 
     pixabayApiService.amountOfPages = Math.ceil(totalHits / 40);
@@ -45,6 +51,7 @@ async function onFormSubmit(evt) {
       Notify.warning(
         'Sorry, there are no images matching your search query. Please try again.'
       );
+      hideLoader();
       throw new Error(
         'Sorry, there are no images matching your search query. Please try again.'
       );
@@ -66,11 +73,11 @@ async function onLoadMoreBtnClick() {
   hideLoadMoreBtn();
   showSmallLoader();
   pixabayApiService.increasePage();
-  
+
   try {
     const { hits } = await pixabayApiService.fetchImages();
     const markup = createGalleryMarkup(hits);
-    
+
     renderGallery(markup);
     simpleLigtboxGallery.refresh();
     hideSmallLoader();
@@ -156,7 +163,7 @@ function showLoader() {
 }
 
 function hideLoader() {
-refs.loader.classList.add('hidden');
+  refs.loader.classList.add('hidden');
 }
 
 function showSmallLoader() {
@@ -166,6 +173,5 @@ function showSmallLoader() {
 
 function hideSmallLoader() {
   refs.loader.classList.add('hidden');
-  refs.loader.classList.remove('loader--small')
+  refs.loader.classList.remove('loader--small');
 }
-
