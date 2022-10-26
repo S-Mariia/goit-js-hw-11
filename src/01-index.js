@@ -15,13 +15,12 @@ const refs = {
   submitBtn: document.querySelector('#search-form > button'),
   gallery: document.querySelector('.gallery'),
   loadMoreBtn: document.querySelector('.load-more'),
+  loader: document.querySelector('.loader'),
 };
 
 refs.submitBtn.insertAdjacentHTML('beforeend', svgSearch);
 const pixabayApiService = new PixabayApiService();
 const simpleLigtboxGallery = new SimpleLightbox('.gallery a');
-
-hideLoadMoreBtn();
 
 refs.form.addEventListener('submit', onFormSubmit);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
@@ -30,8 +29,9 @@ async function onFormSubmit(evt) {
   evt.preventDefault();
   clearGallery();
   hideLoadMoreBtn();
+  showLoader();
   pixabayApiService.resetPage();
-  pixabayApiService.searchQuery = evt.target.elements.searchQuery.value;
+  pixabayApiService.searchQuery = evt.target.elements.searchQuery.value.trim();
 
   try {
     const { totalHits, hits } = await pixabayApiService.fetchImages();
@@ -55,6 +55,7 @@ async function onFormSubmit(evt) {
 
     renderGallery(markup);
     simpleLigtboxGallery.refresh();
+    hideLoader();
     addSmoothScroll();
   } catch (err) {
     console.log(err);
@@ -62,20 +63,24 @@ async function onFormSubmit(evt) {
 }
 
 async function onLoadMoreBtnClick() {
+  hideLoadMoreBtn();
+  showSmallLoader();
   pixabayApiService.increasePage();
-  if (!pixabayApiService.canLoadMoreImages()) {
-    hideLoadMoreBtn();
-    console.log('III');
-    Notify.info("We're sorry, but you've reached the end of search results.");
-  }
-
+  
   try {
     const { hits } = await pixabayApiService.fetchImages();
     const markup = createGalleryMarkup(hits);
-
+    
     renderGallery(markup);
     simpleLigtboxGallery.refresh();
+    hideSmallLoader();
+    showLoadMoreBtn();
     addSmoothScroll();
+
+    if (!pixabayApiService.canLoadMoreImages()) {
+      hideLoadMoreBtn();
+      Notify.info("We're sorry, but you've reached the end of search results.");
+    }
   } catch (err) {
     console.log(err);
   }
@@ -144,5 +149,23 @@ function addSmoothScroll() {
     top: cardHeight * 2,
     behavior: 'smooth',
   });
+}
+
+function showLoader() {
+  refs.loader.classList.remove('hidden');
+}
+
+function hideLoader() {
+refs.loader.classList.add('hidden');
+}
+
+function showSmallLoader() {
+  refs.loader.classList.remove('hidden');
+  refs.loader.classList.add('loader--small');
+}
+
+function hideSmallLoader() {
+  refs.loader.classList.add('hidden');
+  refs.loader.classList.remove('loader--small')
 }
 

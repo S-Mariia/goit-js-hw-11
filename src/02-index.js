@@ -159,3 +159,5 @@ function showScrollUpBtn() {
 function hideScrollUpBtn() {
   refs.scrollUpBtn.classList.add('hidden');
 }
+
+
